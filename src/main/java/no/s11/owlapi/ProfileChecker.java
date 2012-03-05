@@ -83,21 +83,23 @@ public class ProfileChecker {
 				if (report.isInProfile()) {
 					System.out.println("OK");
 				} else {
-					System.out.println(report.getViolations().size() + " violations");
+					System.out.println(report.getViolations().size()
+							+ " violations");
 					anyFailed = true;
 				}
 			}
 			return anyFailed ? 1 : 0;
-		}
+		} else {
 
-		OWLProfileReport report = profile.checkOntology(o);
-		for (OWLProfileViolation v : report.getViolations()) {
-			System.err.println(v);
+			OWLProfileReport report = profile.checkOntology(o);
+			for (OWLProfileViolation v : report.getViolations()) {
+				System.err.println(v.toString());
+			}
+			if (!report.isInProfile()) {
+				return 1;
+			}
+			return 0;
 		}
-		if (!report.isInProfile()) {
-			return 1;
-		}
-		return 0;
 
 	}
 
