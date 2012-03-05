@@ -41,12 +41,14 @@ public class ProfileChecker {
 			System.out.println("Available profiles:");
 			for (OWLProfile p : PROFILES) {
 				System.out.print(p.getClass().getSimpleName());
-				// Can't use p.getName() as it contains spaces
+				System.out.print(" (" + p.getName() + ")");
 				if (p.getClass().equals(DEFAULT_PROFILE.getClass())) {
-					System.out.print(" (default)");
+					System.out.print(" -default-");
 				}
-				System.out.println("--all");
+				// Can't use p.getName() as it contains spaces
+				System.out.println();
 			}
+			System.out.println("--all");
 			return 0;
 		}
 
