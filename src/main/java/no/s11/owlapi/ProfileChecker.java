@@ -1,7 +1,7 @@
 package no.s11.owlapi;
 
 import java.io.File;
-import java.net.URI;
+import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,36 +21,36 @@ import org.semanticweb.owlapi.profiles.OWLProfileViolation;
 
 public class ProfileChecker {
 
-	OWLProfile DEFAULT_PROFILE = new OWL2Profile();
-	List<OWLProfile> PROFILES = Arrays.asList(new OWL2DLProfile(),
+	private static OWLProfile DEFAULT_PROFILE = new OWL2Profile();
+	private static List<OWLProfile> PROFILES = Arrays.asList(new OWL2DLProfile(),
 			new OWL2ELProfile(), new OWL2Profile(), new OWL2QLProfile(),
 			new OWL2RLProfile());
 
-	OWLOntologyManager m = OWLManager.createOWLOntologyManager();
+	private OWLOntologyManager m = OWLManager.createOWLOntologyManager();
 
 	public static void main(String[] args) throws OWLOntologyCreationException {
+        if (args.length == 0 || args[0].equals("-h")) {
+            System.out
+                    .println("Usage: profilechecker.jar <ontology.owl> [profile]");
+            System.out.println();
+            System.out.println("Available profiles:");
+            for (OWLProfile p : PROFILES) {
+                System.out.print(p.getClass().getSimpleName());
+                System.out.print(" (" + p.getName() + ")");
+                if (p.getClass().equals(DEFAULT_PROFILE.getClass())) {
+                    System.out.print(" -default-");
+                }
+                // Can't use p.getName() as it contains spaces
+                System.out.println();
+            }
+            System.out.println("--all");
+            System.exit(1);
+        }
+	    
 		System.exit(new ProfileChecker().check(args));
 	}
 
 	public int check(String[] args) throws OWLOntologyCreationException {
-
-		if (args.length == 0 || args[0].equals("-h")) {
-			System.out
-					.println("Usage: profilechecker.jar <ontology.owl> [profile]");
-			System.out.println();
-			System.out.println("Available profiles:");
-			for (OWLProfile p : PROFILES) {
-				System.out.print(p.getClass().getSimpleName());
-				System.out.print(" (" + p.getName() + ")");
-				if (p.getClass().equals(DEFAULT_PROFILE.getClass())) {
-					System.out.print(" -default-");
-				}
-				// Can't use p.getName() as it contains spaces
-				System.out.println();
-			}
-			System.out.println("--all");
-			return 0;
-		}
 
 		IRI documentIRI = IRI.create(args[0]);
 		if (!documentIRI.isAbsolute()) {
@@ -74,30 +74,35 @@ public class ProfileChecker {
 		} else {
 			profile = DEFAULT_PROFILE;
 		}
-
-		if (profile == null) {
+		
+		return check(o, System.out, System.err, profile);
+	}
+	
+	public int check(OWLOntology o, PrintStream out, PrintStream err, OWLProfile ... profiles) {
+		if (profiles == null || profiles.length == 0) {
 			boolean anyFailed = false;
 			for (OWLProfile p : PROFILES) {
-				System.out.print(p.getClass().getSimpleName() + ": ");
+				out.print(p.getClass().getSimpleName() + ": ");
 				OWLProfileReport report = p.checkOntology(o);
 				if (report.isInProfile()) {
-					System.out.println("OK");
+					out.println("OK");
 				} else {
-					System.out.println(report.getViolations().size()
+					err.println(report.getViolations().size()
 							+ " violations");
 					anyFailed = true;
 				}
 			}
 			return anyFailed ? 1 : 0;
 		} else {
-
-			OWLProfileReport report = profile.checkOntology(o);
-			for (OWLProfileViolation v : report.getViolations()) {
-				System.err.println(v.toString());
-			}
-			if (!report.isInProfile()) {
-				return 1;
-			}
+            for (OWLProfile profile : profiles) {
+    			OWLProfileReport report = profile.checkOntology(o);
+    			for (OWLProfileViolation v : report.getViolations()) {
+    				err.println(v.toString());
+    			}
+    			if (!report.isInProfile()) {
+    				return 1;
+    			}
+            }
 			return 0;
 		}
 
