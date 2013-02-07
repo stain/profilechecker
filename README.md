@@ -16,10 +16,10 @@ Building
     [INFO] Scanning for projects...
     [INFO]                                                                         
     [INFO] ------------------------------------------------------------------------
-    [INFO] Building OWL API profile checker 0.2-SNAPSHOT
+    [INFO] Building OWL API profile checker 1.0
     [INFO] 
     (..)
-    [INFO] Replacing /home/stain/src/profilechecker/target/profilechecker-0.2-SNAPSHOT.jar with /home/stain/src/profilechecker/target/profilechecker-0.2-SNAPSHOT-shaded.jar
+    [INFO] Replacing /home/stain/src/profilechecker/target/profilechecker-1.0.jar with /home/stain/src/profilechecker/target/profilechecker-1.0-shaded.jar
     [INFO] Dependency-reduced POM written at: /home/stain/src/profilechecker/dependency-reduced-pom.xml
     [INFO] ------------------------------------------------------------------------
     [INFO] BUILD SUCCESS
@@ -36,8 +36,8 @@ Installation
 
 On Linux, a JAR file can be made executable.
 
-    stain@ralph-ubuntu:~/src/profilechecker$ chmod 755 target/profilechecker-0.2-SNAPSHOT.jar
-    stain@ralph-ubuntu:~/src/profilechecker$ sudo cp target/profilechecker-0.2-SNAPSHOT.jar /usr/local/bin/profilechecker
+    stain@ralph-ubuntu:~/src/profilechecker$ chmod 755 target/profilechecker-1.0.jar
+    stain@ralph-ubuntu:~/src/profilechecker$ sudo cp target/profilechecker-1.0.jar /usr/local/bin/profilechecker
     stain@ralph-ubuntu:~/src/profilechecker$ profilechecker 
     Usage: profilechecker.jar <ontology.owl> [profile]
     (..)
@@ -52,7 +52,7 @@ Usage
 
 Help:
 
-    $ java -jar target/profilechecker-0.2-SNAPSHOT.jar -h
+    $ java -jar target/profilechecker-1.0.jar -h
     Usage: profilechecker.jar <ontology.owl> [profile]
 
     Available profiles:
@@ -70,14 +70,14 @@ absolute IRI.
 With only ontology IRI or file name, will check against default profile
 (OWL 2 Full):
 
-    $ java -jar target/profilechecker-0.2-SNAPSHOT.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl
+    $ java -jar target/profilechecker-1.0.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl
 
 Exit code is 0 if the ontology conforms to OWL 2 Full.    
 
 
 Checking against a specific profile:    
 
-    $ java -jar target/profilechecker-0.2-SNAPSHOT.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl OWL2QLProfile
+    $ java -jar target/profilechecker-1.0.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl OWL2QLProfile
 
     Use of non-superclass expression in position that requires a
       superclass expression:
@@ -98,7 +98,7 @@ Exit code is 0 if the ontology conforms to the specified profile.
 Checking against all profiles:
 
 
-    $ java -jar target/profilechecker-0.2-SNAPSHOT.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl --all
+    $ java -jar target/profilechecker-1.0.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl --all
     OWL2DLProfile: OK
     OWL2ELProfile: 187 violations
     OWL2Profile: OK

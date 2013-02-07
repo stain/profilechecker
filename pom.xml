@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>no.s11.owlapi</groupId>
 	<artifactId>profilechecker</artifactId>
-	<version>0.2-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>OWL API profile checker</name>
 	<dependencies>
 		<dependency>
