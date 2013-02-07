@@ -12,10 +12,39 @@ Author: Stian Soiland-Reyes <soiland-reyes@cs.manchester.ac.uk>
 Building
 --------
 
-    mvn clean package
-    chmod 755 target/profilechecker-0.2-SNAPSHOT.jar
-    # This only works on Linux 
-    sudo cp target/profilechecker-0.2-SNAPSHOT.jar /usr/local/bin/profilechecker
+    stain@ralph-ubuntu:~/src/profilechecker$ mvn clean package
+    [INFO] Scanning for projects...
+    [INFO]                                                                         
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Building OWL API profile checker 0.2-SNAPSHOT
+    [INFO] 
+    (..)
+    [INFO] Replacing /home/stain/src/profilechecker/target/profilechecker-0.2-SNAPSHOT.jar with /home/stain/src/profilechecker/target/profilechecker-0.2-SNAPSHOT-shaded.jar
+    [INFO] Dependency-reduced POM written at: /home/stain/src/profilechecker/dependency-reduced-pom.xml
+    [INFO] ------------------------------------------------------------------------
+    [INFO] BUILD SUCCESS
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Total time: 29.912s
+    [INFO] Finished at: Thu Feb 07 15:34:12 GMT 2013
+    [INFO] Final Memory: 22M/169M
+    [INFO] ------------------------------------------------------------------------
+
+
+
+Installation
+------------    
+
+On Linux, a JAR file can be made executable.
+
+    stain@ralph-ubuntu:~/src/profilechecker$ chmod 755 target/profilechecker-0.2-SNAPSHOT.jar
+    stain@ralph-ubuntu:~/src/profilechecker$ sudo cp target/profilechecker-0.2-SNAPSHOT.jar /usr/local/bin/profilechecker
+    stain@ralph-ubuntu:~/src/profilechecker$ profilechecker 
+    Usage: profilechecker.jar <ontology.owl> [profile]
+    (..)
+
+
+Creating shell/batch scripts for launching on OS X and Windows is left
+as exercise to the reader.
 
 
 Usage
@@ -23,7 +52,6 @@ Usage
 
 Help:
 
-    $ # profilechecker -h 
     $ java -jar target/profilechecker-0.2-SNAPSHOT.jar -h
     Usage: profilechecker.jar <ontology.owl> [profile]
 
@@ -38,9 +66,6 @@ Help:
 
 The <ontology.owl> parameter can be given as a local file name or an
 absolute IRI.
-
-
-
 
 With only ontology IRI or file name, will check against default profile
 (OWL 2 Full):
