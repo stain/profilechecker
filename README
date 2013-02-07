@@ -1,7 +1,7 @@
 OWL API profile checker
 =======================
 
-(c) 2012 University of Manchester
+(c) 2012-2013 University of Manchester
 
 License: Apache License 2.0 (see LICENSE.TXT)
 
@@ -13,8 +13,9 @@ Building
 --------
 
     mvn clean package
-    chmod 755 target/profilechecker-0.1-SNAPSHOT.jar
-    cp target/profilechecker-0.1.jar /usr/local/bin/profilechecker
+    chmod 755 target/profilechecker-0.2-SNAPSHOT.jar
+    # This only works on Linux 
+    sudo cp target/profilechecker-0.2-SNAPSHOT.jar /usr/local/bin/profilechecker
 
 
 Usage
@@ -22,7 +23,8 @@ Usage
 
 Help:
 
-    $ java -jar target/profilechecker-0.1-SNAPSHOT.jar -h
+    $ # profilechecker -h 
+    $ java -jar target/profilechecker-0.2-SNAPSHOT.jar -h
     Usage: profilechecker.jar <ontology.owl> [profile]
 
     Available profiles:
@@ -43,14 +45,14 @@ absolute IRI.
 With only ontology IRI or file name, will check against default profile
 (OWL 2 Full):
 
-    $ java -jar target/profilechecker-0.1-SNAPSHOT.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl
+    $ java -jar target/profilechecker-0.2-SNAPSHOT.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl
 
 Exit code is 0 if the ontology conforms to OWL 2 Full.    
 
 
 Checking against a specific profile:    
 
-    $ java -jar target/profilechecker-0.1-SNAPSHOT.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl OWL2QLProfile
+    $ java -jar target/profilechecker-0.2-SNAPSHOT.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl OWL2QLProfile
 
     Use of non-superclass expression in position that requires a
       superclass expression:
@@ -71,7 +73,7 @@ Exit code is 0 if the ontology conforms to the specified profile.
 Checking against all profiles:
 
 
-    $ java -jar target/profilechecker-0.1-SNAPSHOT.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl --all
+    $ java -jar target/profilechecker-0.2-SNAPSHOT.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl --all
     OWL2DLProfile: OK
     OWL2ELProfile: 187 violations
     OWL2Profile: OK
