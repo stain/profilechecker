@@ -3,14 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>no.s11.owlapi</groupId>
 	<artifactId>profilechecker</artifactId>
-	<version>0.1</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>OWL API profile checker</name>
 	<dependencies>
 		<dependency>
 			<groupId>net.sourceforge.owlapi</groupId>
 			<artifactId>owlapi-all</artifactId>
 			<version>3.2.4</version>
-			
 		</dependency>
 	</dependencies>
 	<repositories>
