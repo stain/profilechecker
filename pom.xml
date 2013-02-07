@@ -8,8 +8,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>net.sourceforge.owlapi</groupId>
-			<artifactId>owlapi-all</artifactId>
-			<version>3.2.4</version>
+			<artifactId>owlapi-contract</artifactId>
+			<version>3.4.3</version>
 		</dependency>
 	</dependencies>
 
