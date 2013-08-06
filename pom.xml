@@ -9,7 +9,7 @@
 		<dependency>
 			<groupId>net.sourceforge.owlapi</groupId>
 			<artifactId>owlapi-contract</artifactId>
-			<version>3.4.3</version>
+			<version>3.4.5</version>
 		</dependency>
 	</dependencies>
 
