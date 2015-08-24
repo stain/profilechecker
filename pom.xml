@@ -1,54 +1,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>no.s11.owlapi</groupId>
-	<artifactId>profilechecker</artifactId>
-	<version>1.0.1</version>
-	<name>OWL API profile checker</name>
-	<dependencies>
-		<dependency>
-			<groupId>net.sourceforge.owlapi</groupId>
-			<artifactId>owlapi-contract</artifactId>
-			<version>3.4.5</version>
-		</dependency>
-	</dependencies>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
+
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>no.s11.owlapi</groupId>
+    <artifactId>profilechecker</artifactId>
+    <version>1.0.1</version>
+    <name>OWL API profile checker</name>
+    <dependencies>
+        <dependency>
+            <groupId>net.sourceforge.owlapi</groupId>
+            <artifactId>owlapi-contract</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+    </dependencies>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
-	<repositories>
-	
-		<repository>
-    <!-- FIXME:  Use proper OWL API Maven repository -->
-        <id>owlapi-repository</id>
-        <url>file://${project.basedir}/repository/</url>
-        <releases>
-           <enabled>true</enabled>
-        </releases>
-        <snapshots>
-          <enabled>false</enabled>
-        </snapshots>        
-     </repository>
-	</repositories>
-
-	<build>
-		<plugins>
-            
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
+    
+    <build>
+    <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>2.4</version>
                 <executions>
                     <execution>
                         <goals>
@@ -61,7 +43,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
                 <executions>
                     <execution>
                         <goals>
@@ -73,7 +55,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.13</version>
+                <version>2.18.1</version>
                 <configuration>
                     <skip>false</skip>
                     <systemProperties>
@@ -84,54 +66,54 @@
                     </systemProperties>
                 </configuration>
             </plugin>
-			 <plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-shade-plugin</artifactId>
-	        <version>2.0</version>
-	        <executions>
-	          <execution>
-	            <phase>package</phase>
-	            <goals>
-	              <goal>shade</goal>
-	            </goals>
-	            <configuration>
-	              <transformers>
-	                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-	                  <mainClass>no.s11.owlapi.ProfileChecker</mainClass>
-	                </transformer>
-	              </transformers>
-	            </configuration>
-	          </execution>
-	        </executions>
-	      </plugin>
-			<!-- 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>appassembler-maven-plugin</artifactId>
-				<version>1.3</version>
-				<executions>
-					<execution>
-						<id>assemble</id>
-						<phase>package</phase>
-						<goals>
-							<goal>assemble</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<repositoryLayout>flat</repositoryLayout>
-					<repositoryName>lib</repositoryName>
-					<assembleDirectory>${project.build.directory}/${project.artifactId}</assembleDirectory>
-					<programs>
-						<program>
-							<mainClass>no.s11.owlapi.ProfileChecker</mainClass>
-							<name>profilechecker</name>
-						</program>
-					</programs>
-				</configuration>
-			</plugin>
-			-->
-		</plugins>
-	</build>
+             <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>2.4.1</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                      <mainClass>no.s11.owlapi.ProfileChecker</mainClass>
+                    </transformer>
+                  </transformers>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+            <!-- 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <version>1.3</version>
+                <executions>
+                    <execution>
+                        <id>assemble</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <repositoryLayout>flat</repositoryLayout>
+                    <repositoryName>lib</repositoryName>
+                    <assembleDirectory>${project.build.directory}/${project.artifactId}</assembleDirectory>
+                    <programs>
+                        <program>
+                            <mainClass>no.s11.owlapi.ProfileChecker</mainClass>
+                            <name>profilechecker</name>
+                        </program>
+                    </programs>
+                </configuration>
+            </plugin>
+            -->
+        </plugins>
+    </build>
 
 </project>
