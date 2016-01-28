@@ -59,6 +59,7 @@ public class ProfileChecker {
 		}
 		OWLOntology o = m.loadOntologyFromOntologyDocument(documentIRI);
 		OWLProfile profile = null;
+		boolean verbose = false;
 
 		if (args.length > 1) {
 			String profileName = args[1];
@@ -70,6 +71,9 @@ public class ProfileChecker {
 			if (profile == null && !profileName.equals("--all")) {
 				throw new IllegalArgumentException("Unknown profile: "
 						+ profileName);
+			}
+			if (args.length > 2 && args[2].equals("--verbose")) {
+				verbose = true;
 			}
 		} else {
 			profile = DEFAULT_PROFILE;
