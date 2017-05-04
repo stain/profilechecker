@@ -15,6 +15,10 @@ Author: Stian Soiland-Reyes <soiland-reyes@manchester.ac.uk>
 
 ## Building
 
+Note: you don't need to compile from source code, you can also use one of the 
+[releases](https://github.com/stain/profilechecker/releases).
+
+
     stain@ralph-ubuntu:~/src/profilechecker$ mvn clean package
     [INFO] Scanning for projects...
     [INFO]                                                                         
