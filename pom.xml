@@ -23,7 +23,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>no.s11.owlapi</groupId>
     <artifactId>profilechecker</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
     <name>OWL API profile checker</name>
 
     <licenses>
