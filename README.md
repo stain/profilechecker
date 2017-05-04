@@ -1,5 +1,4 @@
-OWL API profile checker
-=======================
+# OWL API profile checker
 
 (c) 2012-2017 The University of Manchester
 
@@ -8,15 +7,13 @@ License: Apache License 2.0 (see LICENSE.TXT)
 Author: Stian Soiland-Reyes <soiland-reyes@manchester.ac.uk>
 
 
-Requirements
-------------
+## Requirements
 
 * [Java](https://java.com/en/download/) 8 or [OpenJDK](http://openjdk.java.net/) 8
 * [Apache Maven](https://maven.apache.org/download.cgi) 3.3 or later 
 
 
-Building
---------
+## Building
 
     stain@ralph-ubuntu:~/src/profilechecker$ mvn clean package
     [INFO] Scanning for projects...
@@ -37,10 +34,9 @@ Building
 
 
 
-Usage
------
+## Usage
 
-Help:
+### Help
 
     $ java -jar target/profilechecker-1.1.0.jar -h
     Usage: profilechecker.jar <ontology.owl> [profile]
@@ -58,13 +54,17 @@ Help:
 The `<ontology.owl>` parameter can be given as a local file name or an
 absolute IRI.
 
+### Default profile
+
 With only ontology IRI or file name, will check against default profile
 (OWL 2 Full):
 
     $ java -jar target/profilechecker-1.1.0.jar https://cdn.rawgit.com/owlcs/pizza-ontology/v1.5.0/pizza.owl
 
-Exit code is 0 if the ontology conforms to OWL 2 Full.    
+Exit code is 0 if the ontology conforms to OWL 2 Full, in which case there should be no output on STDERR.    
 
+
+### Specify OWL2 profile
 
 Checking against a specific profile:    
 
@@ -82,9 +82,17 @@ Checking against a specific profile:
       in <http://www.co-ode.org/ontologies/pizza/pizza.owl>] 
     (..)
 
+Exit code is 0 if the ontology conforms to the specified profile, with errors logged to STDERR.
 
-Exit code is 0 if the ontology conforms to the specified profile.
+The ontology profile can be specified in any of these forms (in order of preference):
 
+* `OWL2_DL` ([`Profiles`](http://owlcs.github.io/owlapi/apidocs_5/org/semanticweb/owlapi/profiles/Profiles.html) enum value)
+* `http://www.w3.org/ns/owl-profile/DL` (IRI of OWL profile)
+* `DL` (relative IRI of OWL profile)
+* `OWL2DLProfile` (classname)
+
+
+### All profiles
 
 Checking against all profiles:
 
@@ -97,8 +105,11 @@ Checking against all profiles:
     OWL2_FULL: OK
 
 
-Exit code is 0 if the ontology conforms to all profiles.
+Exit code is 0 if the ontology conforms to all profiles. 
+The violation count per profile is output to STDOUT.
 
+
+### Warnings
 
 Note that any warnings or errors logged from the OWLAPI (prefix `[main]`)
 during ontology loading do not necessarily mean violation against the profile:
@@ -110,4 +121,5 @@ during ontology loading do not necessarily mean violation against the profile:
     OWL2_EL: 1 violations
     OWL2_RL: 1 violations
     OWL2_FULL: OK
+
 
