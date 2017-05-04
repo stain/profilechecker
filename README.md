@@ -1,12 +1,18 @@
 OWL API profile checker
 =======================
 
-(c) 2012-2013 University of Manchester
+(c) 2012-2017 The University of Manchester
 
 License: Apache License 2.0 (see LICENSE.TXT)
 
-Author: Stian Soiland-Reyes <soiland-reyes@cs.manchester.ac.uk>
+Author: Stian Soiland-Reyes <soiland-reyes@manchester.ac.uk>
 
+
+Requirements
+------------
+
+* [Java](https://java.com/en/download/) 8 or [OpenJDK](http://openjdk.java.net/) 8
+* [Apache Maven](https://maven.apache.org/download.cgi) 3.3 or later 
 
 
 Building
@@ -16,10 +22,10 @@ Building
     [INFO] Scanning for projects...
     [INFO]                                                                         
     [INFO] ------------------------------------------------------------------------
-    [INFO] Building OWL API profile checker 1.0
+    [INFO] Building OWL API profile checker 1.1.0
     [INFO] 
     (..)
-    [INFO] Replacing /home/stain/src/profilechecker/target/profilechecker-1.0.jar with /home/stain/src/profilechecker/target/profilechecker-1.0-shaded.jar
+    [INFO] Replacing /home/stain/src/profilechecker/target/profilechecker-1.1.0.jar with /home/stain/src/profilechecker/target/profilechecker-1.0-shaded.jar
     [INFO] Dependency-reduced POM written at: /home/stain/src/profilechecker/dependency-reduced-pom.xml
     [INFO] ------------------------------------------------------------------------
     [INFO] BUILD SUCCESS
@@ -31,28 +37,12 @@ Building
 
 
 
-Installation
-------------    
-
-On Linux, a JAR file can be made executable.
-
-    stain@ralph-ubuntu:~/src/profilechecker$ chmod 755 target/profilechecker-1.0.jar
-    stain@ralph-ubuntu:~/src/profilechecker$ sudo cp target/profilechecker-1.0.jar /usr/local/bin/profilechecker
-    stain@ralph-ubuntu:~/src/profilechecker$ profilechecker 
-    Usage: profilechecker.jar <ontology.owl> [profile]
-    (..)
-
-
-Creating shell/batch scripts for launching on OS X and Windows is left
-as exercise to the reader.
-
-
 Usage
 -----
 
 Help:
 
-    $ java -jar target/profilechecker-1.0.jar -h
+    $ java -jar target/profilechecker-1.1.0.jar -h
     Usage: profilechecker.jar <ontology.owl> [profile]
 
     Available profiles:
@@ -63,21 +53,22 @@ Help:
     OWL2RLProfile (OWL 2 RL)
     --all
 
+(Modify the version number `1.1.0` above to correspond to the output of your build)
 
-The <ontology.owl> parameter can be given as a local file name or an
+The `<ontology.owl>` parameter can be given as a local file name or an
 absolute IRI.
 
 With only ontology IRI or file name, will check against default profile
 (OWL 2 Full):
 
-    $ java -jar target/profilechecker-1.0.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl
+    $ java -jar target/profilechecker-1.1.0.jar https://cdn.rawgit.com/owlcs/pizza-ontology/v1.5.0/pizza.owl
 
 Exit code is 0 if the ontology conforms to OWL 2 Full.    
 
 
 Checking against a specific profile:    
 
-    $ java -jar target/profilechecker-1.0.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl OWL2QLProfile
+    $ java -jar target/profilechecker-1.1.0.jar https://cdn.rawgit.com/owlcs/pizza-ontology/v1.5.0/pizza.owl OWL2QLProfile
 
     Use of non-superclass expression in position that requires a
       superclass expression:
@@ -98,12 +89,25 @@ Exit code is 0 if the ontology conforms to the specified profile.
 Checking against all profiles:
 
 
-    $ java -jar target/profilechecker-1.0.jar http://www.co-ode.org/ontologies/pizza/2007/02/12/pizza.owl --all
+    $ java -jar target/profilechecker-1.1.0.jar https://cdn.rawgit.com/owlcs/pizza-ontology/v1.5.0/pizza.owl --all
     OWL2DLProfile: OK
-    OWL2ELProfile: 187 violations
+    OWL2ELProfile: 66 violations
     OWL2Profile: OK
     OWL2QLProfile: 52 violations
     OWL2RLProfile: 188 violations
 
+
 Exit code is 0 if the ontology conforms to all profiles.
+
+
+Note that any warnings or errors logged from the OWLAPI (prefix `[main]`)
+during ontology loading do not necessarily mean violation against the profile:
+
+    $ java -jar target/profilechecker-1.1.0-SNAPSHOT.jar ~/Desktop/annotated.ttl --all
+    [main] ERROR uk.ac.manchester.cs.owl.owlapi.OWLOntologyManagerImpl - Illegal redeclarations of entities: reuse of entity http://example.com/annotatedOntology#property1 in punning not allowed [Declaration(AnnotationProperty(<http://example.com/annotatedOntology#property1>)), Declaration(ObjectProperty(<http://example.com/annotatedOntology#property1>))]
+    OWL2DLProfile: 1 violations
+    OWL2ELProfile: 1 violations
+    OWL2Profile: OK
+    OWL2QLProfile: 1 violations
+    OWL2RLProfile: 1 violations
 
