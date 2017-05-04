@@ -16,7 +16,7 @@
 package no.s11.owlapi;
 
 import java.io.File;
-import java.net.URISyntaxException;
+import java.util.Optional;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
@@ -64,30 +64,13 @@ public class ProfileChecker {
 			documentIRI = IRI.create(new File(args[0]));
 		}
 		OWLOntology o = m.loadOntologyFromOntologyDocument(documentIRI);
-		OWLProfile profile = null;
 		boolean verbose = false;
 
+		Optional<OWLProfile> profile = Optional.empty();
 		if (args.length > 1) {
 			// Name of profile to match
 		    String profileName = args[1];
-			// e.g. "DL" -> <http://www.w3.org/ns/owl-profile/DL> 
-		    IRI profileIRI;
-		    try { 
-			    profileIRI = PROFILE_BASE.resolve(args[1]);
-			} catch (IllegalArgumentException ex) {
-			    profileIRI = null;
-			}
-			
-			for (Profiles p : Profiles.values()) {
-			    if (p.name().equals(profileName) || // short enum-name
-			        p.getIRI().equals(profileIRI) ||
-			        p.getName().equals(profileName) || // might contain spaces 
-			        // compatibility with profilechecker <1.1 
-			        p.getOWLProfile().getClass().getSimpleName().equals(profileName)) {
-			            profile = p;
-			            break;
-			    }
-			}
+			profile = owlProfilebyName(profileName);
 			if (profile == null && !profileName.equals("--all")) {
 				throw new IllegalArgumentException("Unknown profile: "
 						+ profileName);
@@ -96,10 +79,10 @@ public class ProfileChecker {
 				verbose = true;
 			}
 		} else {
-			profile = DEFAULT_PROFILE;
+			profile = Optional.of(DEFAULT_PROFILE);
 		}
 
-		if (profile == null) {
+		if (! profile.isPresent()) {
 			// --all 
 		    boolean anyFailed = false;
 			for (Profiles p : Profiles.values()) {
@@ -115,7 +98,7 @@ public class ProfileChecker {
 			}
 			return anyFailed ? 1 : 0;
 		} else {
-			OWLProfileReport report = profile.checkOntology(o);
+			OWLProfileReport report = profile.get().checkOntology(o);
 			for (OWLProfileViolation v : report.getViolations()) {
 				System.err.println(v.toString());
 			}
@@ -125,5 +108,26 @@ public class ProfileChecker {
 			return 0;
 		}
 	}
+
+    public Optional<OWLProfile> owlProfilebyName(String profileName) {
+        // e.g. "DL" -> <http://www.w3.org/ns/owl-profile/DL> 
+        IRI profileIRI;
+        try { 
+            profileIRI = PROFILE_BASE.resolve(profileName);
+        } catch (IllegalArgumentException ex) {
+            profileIRI = null;
+        }
+        
+        for (Profiles p : Profiles.values()) {
+            if (p.name().equals(profileName) || // short enum-name
+                p.getIRI().equals(profileIRI) ||
+                p.getName().equals(profileName) || // might contain spaces 
+                // compatibility with profilechecker <1.1 
+                p.getOWLProfile().getClass().getSimpleName().equals(profileName)) {
+                    return Optional.of(p);
+            }
+        }
+        return Optional.empty();
+    }
 }
 
