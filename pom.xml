@@ -14,7 +14,7 @@
         <dependency>
             <groupId>net.sourceforge.owlapi</groupId>
             <artifactId>owlapi-contract</artifactId>
-            <version>3.5.2</version>
+            <version>5.1.0</version>
         </dependency>
     </dependencies>
 
