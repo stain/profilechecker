@@ -4,25 +4,66 @@
         <maven>3.0</maven>
     </prerequisites>
 
-
     <modelVersion>4.0.0</modelVersion>
     <groupId>no.s11.owlapi</groupId>
     <artifactId>profilechecker</artifactId>
     <version>1.1.0-SNAPSHOT</version>
     <name>OWL API profile checker</name>
     <dependencies>
+
+        <!-- no-nonsense console logging implementation -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.21</version> <!-- match owlapi's slf4j-api  -->
+        </dependency>
+
+	<!-- OWL API -->
         <dependency>
             <groupId>net.sourceforge.owlapi</groupId>
             <artifactId>owlapi-contract</artifactId>
             <version>5.1.0</version>
+            <exclusions>
+                <!-- To avoid maven-shade-plugin warnings, exclude
+                     duplicate dependencies that are also already
+                                 shaded within httpclient-osgi and httpcore-osgi -->
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient-cache</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore-nio</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>fluent-hc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpmime</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     
     <build>
@@ -30,7 +71,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.4</version>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -43,7 +84,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.0.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -55,9 +96,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
+                <version>2.20</version>
                 <configuration>
-                    <skip>false</skip>
                     <systemProperties>
                         <property>
                             <name>java.awt.headless</name>
@@ -69,7 +109,7 @@
              <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
-            <version>2.4.1</version>
+            <version>3.0.0</version>
             <executions>
               <execution>
                 <phase>package</phase>
@@ -86,33 +126,6 @@
               </execution>
             </executions>
           </plugin>
-            <!-- 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>appassembler-maven-plugin</artifactId>
-                <version>1.3</version>
-                <executions>
-                    <execution>
-                        <id>assemble</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>assemble</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <repositoryLayout>flat</repositoryLayout>
-                    <repositoryName>lib</repositoryName>
-                    <assembleDirectory>${project.build.directory}/${project.artifactId}</assembleDirectory>
-                    <programs>
-                        <program>
-                            <mainClass>no.s11.owlapi.ProfileChecker</mainClass>
-                            <name>profilechecker</name>
-                        </program>
-                    </programs>
-                </configuration>
-            </plugin>
-            -->
         </plugins>
     </build>
 
