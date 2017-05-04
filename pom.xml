@@ -161,4 +161,22 @@
         </plugins>
     </build>
 
+  <scm>
+    <connection>scm:git:git://github.com/stain/profilechecker.git</connection>
+    <developerConnection>scm:git:git@github.com:stain/profilechecker.git</developerConnection>
+    <url>https://github.com/stain/profilechecker/</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>Stian Soiland-Reyes</name>
+      <email>soiland-reyes@manchester.ac.uk</email>
+      <url>http://orcid.org/0000-0001-9842-9718</url>
+      <organization>eScience Lab, The University of Manchester</organization>
+      <organizationUrl>http://www.esciencelab.org.uk/</organizationUrl>
+    </developer>
+  </developers>
+
+
 </project>
