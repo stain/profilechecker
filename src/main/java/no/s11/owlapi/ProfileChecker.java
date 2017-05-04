@@ -15,7 +15,10 @@
  */
 package no.s11.owlapi;
 
-import java.io.File;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -31,83 +34,123 @@ import org.semanticweb.owlapi.profiles.Profiles;
 public class ProfileChecker {
 
 	private static final IRI PROFILE_BASE = IRI.create("http://www.w3.org/ns/owl-profile/");
-    OWLProfile DEFAULT_PROFILE = Profiles.OWL2_FULL;
-	OWLOntologyManager m = OWLManager.createOWLOntologyManager();
+    
+	private static final OWLProfile DEFAULT_PROFILE = Profiles.OWL2_FULL;
+	
+	private final OWLOntologyManager ontologyManager;
 
-	public static void main(String[] args) throws OWLOntologyCreationException {
-		System.exit(new ProfileChecker().check(args));
+	public ProfileChecker() {
+	    this(OWLManager.createOWLOntologyManager());
 	}
+	
+	public ProfileChecker(OWLOntologyManager ontologyManager) {
+	    this.ontologyManager = ontologyManager;
+	}
+	    
 
 	public int check(String[] args) throws OWLOntologyCreationException {
-
 		if (args.length == 0 || args[0].equals("-h") || args[0].equals("--help")) {
-			System.out
-					.println("Usage: profilechecker.jar <ontology.owl> [profile]");
-			System.out.println();
-			System.out.println("Available profiles:");
-			for (Profiles p : Profiles.values()) {
-				System.out.print(p.name());
-				System.out.print(" (" + p.getName() + ")");
-				if (p.equals(DEFAULT_PROFILE)) {
-					System.out.print(" -default-");
-				}
-				// Can't use p.getName() as it contains spaces
-				System.out.println();
-			}
-			System.out.println("--all");
+			printHelp();
 			return 0;
 		}
+		// args must be non-empty by now, first argument must be
+		// the ontology to check
+		String iri = args[0];
 
-		IRI documentIRI = IRI.create(args[0]);
-		if (!documentIRI.isAbsolute()) {
-			// Assume it's a file
-			documentIRI = IRI.create(new File(args[0]));
-		}
-		OWLOntology o = m.loadOntologyFromOntologyDocument(documentIRI);
-		boolean verbose = false;
-
-		Optional<OWLProfile> profile = Optional.empty();
-		if (args.length > 1) {
-			// Name of profile to match
-		    String profileName = args[1];
-			profile = owlProfilebyName(profileName);
-			if (profile == null && !profileName.equals("--all")) {
-				throw new IllegalArgumentException("Unknown profile: "
-						+ profileName);
-			}
-			if (args.length > 2 && args[2].equals("--verbose")) {
-				verbose = true;
-			}
+        
+        // Optional second argument: OWL Profile to check against
+		final Optional<OWLProfile> profile;
+		if (args.length < 2) {
+		    profile = Optional.of(DEFAULT_PROFILE);
+		} else if (args[1].equals("--all")) {
+            profile = Optional.empty();
 		} else {
-			profile = Optional.of(DEFAULT_PROFILE);
+            // Look up profile name
+            String profileName = args[1];
+            profile = owlProfilebyName(profileName);                
+            if (! profile.isPresent()) {
+                throw new IllegalArgumentException("Unknown profile: "
+                        + profileName);
+            }       
 		}
-
-		if (! profile.isPresent()) {
-			// --all 
-		    boolean anyFailed = false;
-			for (Profiles p : Profiles.values()) {
-				System.out.print(p.name() + ": ");
-				OWLProfileReport report = p.checkOntology(o);
-				if (report.isInProfile()) {
-					System.out.println("OK");
-				} else {
-					System.out.println(report.getViolations().size()
-							+ " violations");
-					anyFailed = true;
-				}
-			}
-			return anyFailed ? 1 : 0;
-		} else {
-			OWLProfileReport report = profile.get().checkOntology(o);
-			for (OWLProfileViolation v : report.getViolations()) {
-				System.err.println(v.toString());
-			}
-			if (!report.isInProfile()) {
-				return 1;
-			}
-			return 0;
-		}
+        final boolean anyFailed = checkOntology(iri, profile);
+		return anyFailed ? 1 : 0;
 	}
+
+    public boolean checkOntology(String iri, final Optional<OWLProfile> profile) throws OWLOntologyCreationException {
+        OWLOntology ontology = loadOntology(iri);		
+		final boolean anyFailed;
+		if (profile.isPresent()) {
+		    anyFailed = checkAgainstProfile(ontology, profile, System.err);
+		} else {
+			// --all prints to System.out as each ontology is checked in order
+		    anyFailed = checkAllProfiles(ontology, System.out);
+		}
+        return anyFailed;
+    }
+
+    public boolean checkAgainstProfile(OWLOntology o, final Optional<OWLProfile> profile, PrintStream out) {
+        OWLProfileReport report = profile.get().checkOntology(o);
+        for (OWLProfileViolation v : report.getViolations()) {
+            out.println(v.toString());
+        }
+        // true if failed
+        return !report.isInProfile();
+    }
+
+    public boolean checkAllProfiles(OWLOntology o, PrintStream out) {
+        boolean anyFailed = false;
+        for (Profiles p : Profiles.values()) {
+        	out.print(p.name() + ": ");
+        	OWLProfileReport report = p.checkOntology(o);
+        	if (report.isInProfile()) {
+        		out.println("OK");
+        	} else {        		
+                out.println(report.getViolations().size()
+        				+ " violations");
+                // Don't return early, we'll check all profiles
+        		anyFailed  = true;
+        	}
+        }
+        return anyFailed;
+    }
+
+    public void printHelp() {
+        System.out
+        		.println("Usage: profilechecker.jar <ontology.owl> [profile]");
+        System.out.println();
+        System.out.println("Available profiles:");
+        for (Profiles p : Profiles.values()) {
+            // enum name (possible argument)
+        	System.out.print(p.name());
+        	// descriptive name (may contain spaces)
+        	System.out.print(" (" + p.getName() + ")");
+        	if (p.equals(DEFAULT_PROFILE)) {
+        		System.out.print(" -default-");
+        	}
+        	System.out.println();
+        }
+        System.out.println("--all");
+    }
+
+    public OWLOntology loadOntology(String pathOrIri) throws OWLOntologyCreationException {
+        Path path = Paths.get(pathOrIri);
+        final IRI documentIRI;
+        if (Files.isReadable(path)) {
+            // NOTE: This is a lazy way to check if the user meant a filename.
+            // If the user gives a filename that does not exist as a file, we will
+            // try to load it as a IRI. This avoids distinguishing between 
+            // "C:/WIDOWS/ontology.html" as a URI or filename
+            documentIRI = IRI.create(path.toUri());
+        } else {
+            documentIRI = IRI.create(pathOrIri);
+            if (! (documentIRI.isAbsolute())) {
+                // Perhaps the user meant a 
+                throw new OWLOntologyCreationException("Can't find: " + pathOrIri);
+            }
+        }
+		return ontologyManager.loadOntologyFromOntologyDocument(documentIRI);        
+    }
 
     public Optional<OWLProfile> owlProfilebyName(String profileName) {
         // e.g. "DL" -> <http://www.w3.org/ns/owl-profile/DL> 
@@ -129,5 +172,10 @@ public class ProfileChecker {
         }
         return Optional.empty();
     }
+    
+    public static void main(String[] args) throws OWLOntologyCreationException {
+        System.exit(new ProfileChecker().check(args));
+    }
+    
 }
 
