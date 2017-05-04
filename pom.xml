@@ -27,6 +27,14 @@
     <version>1.1.0-SNAPSHOT</version>
     <name>OWL API profile checker</name>
 
+    <licenses>
+	    <license>
+		    <name>Apache License, Version 2.0</name>
+		    <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		    <distribution>repo</distribution>
+	    </license>
+    </licenses>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -130,7 +138,6 @@
             <version>3.0.0</version>
             <executions>
               <execution>
-                <phase>package</phase>
                 <goals>
                   <goal>shade</goal>
                 </goals>
@@ -139,6 +146,13 @@
                     <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                       <mainClass>no.s11.owlapi.ProfileChecker</mainClass>
                     </transformer>
+		    <!--
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer">
+                    </transformer>
+                    -->
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
+                        <addHeader>true</addHeader>
+                    </transformer>		    
                   </transformers>
                 </configuration>
               </execution>
