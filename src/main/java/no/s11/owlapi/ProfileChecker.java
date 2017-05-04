@@ -16,31 +16,22 @@
 package no.s11.owlapi;
 
 import java.io.File;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
+import java.net.URISyntaxException;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.profiles.OWL2DLProfile;
-import org.semanticweb.owlapi.profiles.OWL2ELProfile;
-import org.semanticweb.owlapi.profiles.OWL2Profile;
-import org.semanticweb.owlapi.profiles.OWL2QLProfile;
-import org.semanticweb.owlapi.profiles.OWL2RLProfile;
 import org.semanticweb.owlapi.profiles.OWLProfile;
 import org.semanticweb.owlapi.profiles.OWLProfileReport;
 import org.semanticweb.owlapi.profiles.OWLProfileViolation;
+import org.semanticweb.owlapi.profiles.Profiles;
 
 public class ProfileChecker {
 
-	OWLProfile DEFAULT_PROFILE = new OWL2Profile();
-	List<OWLProfile> PROFILES = Arrays.asList(new OWL2DLProfile(),
-			new OWL2ELProfile(), new OWL2Profile(), new OWL2QLProfile(),
-			new OWL2RLProfile());
-
+	private static final IRI PROFILE_BASE = IRI.create("http://www.w3.org/ns/owl-profile/");
+    OWLProfile DEFAULT_PROFILE = Profiles.OWL2_FULL;
 	OWLOntologyManager m = OWLManager.createOWLOntologyManager();
 
 	public static void main(String[] args) throws OWLOntologyCreationException {
@@ -54,10 +45,10 @@ public class ProfileChecker {
 					.println("Usage: profilechecker.jar <ontology.owl> [profile]");
 			System.out.println();
 			System.out.println("Available profiles:");
-			for (OWLProfile p : PROFILES) {
-				System.out.print(p.getClass().getSimpleName());
+			for (Profiles p : Profiles.values()) {
+				System.out.print(p.name());
 				System.out.print(" (" + p.getName() + ")");
-				if (p.getClass().equals(DEFAULT_PROFILE.getClass())) {
+				if (p.equals(DEFAULT_PROFILE)) {
 					System.out.print(" -default-");
 				}
 				// Can't use p.getName() as it contains spaces
@@ -77,11 +68,25 @@ public class ProfileChecker {
 		boolean verbose = false;
 
 		if (args.length > 1) {
-			String profileName = args[1];
-			for (OWLProfile p : PROFILES) {
-				if (p.getClass().getSimpleName().equals(profileName)) {
-					profile = p;
-				}
+			// Name of profile to match
+		    String profileName = args[1];
+			// e.g. "DL" -> <http://www.w3.org/ns/owl-profile/DL> 
+		    IRI profileIRI;
+		    try { 
+			    profileIRI = PROFILE_BASE.resolve(args[1]);
+			} catch (IllegalArgumentException ex) {
+			    profileIRI = null;
+			}
+			
+			for (Profiles p : Profiles.values()) {
+			    if (p.name().equals(profileName) || // short enum-name
+			        p.getIRI().equals(profileIRI) ||
+			        p.getName().equals(profileName) || // might contain spaces 
+			        // compatibility with profilechecker <1.1 
+			        p.getOWLProfile().getClass().getSimpleName().equals(profileName)) {
+			            profile = p;
+			            break;
+			    }
 			}
 			if (profile == null && !profileName.equals("--all")) {
 				throw new IllegalArgumentException("Unknown profile: "
@@ -95,9 +100,10 @@ public class ProfileChecker {
 		}
 
 		if (profile == null) {
-			boolean anyFailed = false;
-			for (OWLProfile p : PROFILES) {
-				System.out.print(p.getClass().getSimpleName() + ": ");
+			// --all 
+		    boolean anyFailed = false;
+			for (Profiles p : Profiles.values()) {
+				System.out.print(p.name() + ": ");
 				OWLProfileReport report = p.checkOntology(o);
 				if (report.isInProfile()) {
 					System.out.println("OK");
@@ -109,7 +115,6 @@ public class ProfileChecker {
 			}
 			return anyFailed ? 1 : 0;
 		} else {
-
 			OWLProfileReport report = profile.checkOntology(o);
 			for (OWLProfileViolation v : report.getViolations()) {
 				System.err.println(v.toString());
@@ -119,7 +124,6 @@ public class ProfileChecker {
 			}
 			return 0;
 		}
-
 	}
-
 }
+
