@@ -2,7 +2,8 @@
 
 (c) 2012-2017 The University of Manchester
 
-License: Apache License 2.0 (see LICENSE.TXT)
+License: [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0) 
+  (see `LICENSE` and `NOTICE` for required notices)
 
 Author: Stian Soiland-Reyes <soiland-reyes@manchester.ac.uk>
 
