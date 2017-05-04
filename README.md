@@ -44,13 +44,13 @@ Help:
 
     $ java -jar target/profilechecker-1.1.0.jar -h
     Usage: profilechecker.jar <ontology.owl> [profile]
-
+    
     Available profiles:
-    OWL2DLProfile (OWL 2 DL)
-    OWL2ELProfile (OWL 2 EL)
-    OWL2Profile (OWL 2) -default-
-    OWL2QLProfile (OWL 2 QL)
-    OWL2RLProfile (OWL 2 RL)
+    OWL2_DL (OWL 2 DL)
+    OWL2_QL (OWL 2 QL)
+    OWL2_EL (OWL 2 EL)
+    OWL2_RL (OWL 2 RL)
+    OWL2_FULL (OWL 2 DL) -default-
     --all
 
 (Modify the version number `1.1.0` above to correspond to the output of your build)
@@ -90,11 +90,11 @@ Checking against all profiles:
 
 
     $ java -jar target/profilechecker-1.1.0.jar https://cdn.rawgit.com/owlcs/pizza-ontology/v1.5.0/pizza.owl --all
-    OWL2DLProfile: OK
-    OWL2ELProfile: 66 violations
-    OWL2Profile: OK
-    OWL2QLProfile: 52 violations
-    OWL2RLProfile: 188 violations
+    OWL2_DL: OK
+    OWL2_QL: 52 violations
+    OWL2_EL: 66 violations
+    OWL2_RL: 188 violations
+    OWL2_FULL: OK
 
 
 Exit code is 0 if the ontology conforms to all profiles.
@@ -103,11 +103,11 @@ Exit code is 0 if the ontology conforms to all profiles.
 Note that any warnings or errors logged from the OWLAPI (prefix `[main]`)
 during ontology loading do not necessarily mean violation against the profile:
 
-    $ java -jar target/profilechecker-1.1.0-SNAPSHOT.jar ~/Desktop/annotated.ttl --all
+    $ java -jar target/profilechecker-1.1.0.jar ~/Desktop/annotated.ttl --all
     [main] ERROR uk.ac.manchester.cs.owl.owlapi.OWLOntologyManagerImpl - Illegal redeclarations of entities: reuse of entity http://example.com/annotatedOntology#property1 in punning not allowed [Declaration(AnnotationProperty(<http://example.com/annotatedOntology#property1>)), Declaration(ObjectProperty(<http://example.com/annotatedOntology#property1>))]
-    OWL2DLProfile: 1 violations
-    OWL2ELProfile: 1 violations
-    OWL2Profile: OK
-    OWL2QLProfile: 1 violations
-    OWL2RLProfile: 1 violations
+    OWL2_DL: 1 violations
+    OWL2_QL: 1 violations
+    OWL2_EL: 1 violations
+    OWL2_RL: 1 violations
+    OWL2_FULL: OK
 
